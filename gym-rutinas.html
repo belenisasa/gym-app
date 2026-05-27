@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIS RUTINAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #3B82F6;
+  --accent-dim: rgba(59,130,246,0.12);
+  --accent-border: rgba(59,130,246,0.3);
+  --dark: #0D0D0D;
+  --card-bg: #181818;
+  --card-border: #272727;
+  --text: #FFFFFF;
+  --text-muted: #888;
+  --orange: #F97316;
+  --red: #EF4444;
+  --green: #22C55E;
+  --tag-bg: #222;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;background:var(--dark);border-bottom:1px solid var(--card-border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
+.header-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--accent);}
+.header-subtitle{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.shuffle-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:transform 0.15s,opacity 0.15s;}
+.shuffle-btn:active{transform:scale(0.95);}
+.fav-toggle-btn{background:var(--tag-bg);color:var(--text-muted);border:1px solid var(--card-border);border-radius:10px;padding:9px 12px;font-size:13px;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.fav-toggle-btn.active{background:rgba(255,200,0,0.15);border-color:gold;color:gold;}
+
+/* MAIN */
+.main{padding:18px;display:flex;flex-direction:column;gap:20px;}
+.section-label{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:3px;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;}
+.info-hint{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:10px;font-size:12px;color:var(--text-muted);}
+.info-hint span{color:var(--accent);font-weight:700;}
+
+/* SLOTS */
+.slots-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.slot{background:var(--card-bg);border:2px solid var(--card-border);border-radius:14px;padding:14px;cursor:pointer;transition:border-color 0.2s,transform 0.15s;position:relative;min-height:110px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;}
+.slot:active{transform:scale(0.97);}
+.slot.filled{border-color:var(--accent);}
+.slot-number{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1;color:var(--card-border);position:absolute;bottom:6px;right:12px;pointer-events:none;}
+.slot.filled .slot-number{color:rgba(59,130,246,0.1);}
+.slot-badge{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--tag-bg);color:var(--text-muted);padding:3px 7px;border-radius:5px;display:inline-block;width:fit-content;}
+.slot.filled .slot-badge{background:var(--accent-dim);color:var(--accent);}
+.slot-name{font-family:'Bebas Neue',sans-serif;font-size:19px;line-height:1.1;margin-top:5px;}
+.slot-format{font-size:10px;color:var(--text-muted);margin-top:2px;line-height:1.3;}
+.slot-dur{font-family:'Bebas Neue',sans-serif;font-size:12px;color:var(--accent);margin-top:3px;}
+.slot-empty-hint{color:var(--text-muted);font-size:11px;display:flex;align-items:center;gap:6px;margin-top:10px;}
+.slot-empty-hint .plus{width:22px;height:22px;border-radius:50%;border:1.5px dashed #444;display:flex;align-items:center;justify-content:center;font-size:14px;color:#444;}
+
+/* CONFIRM */
+.confirm-btn{background:var(--accent);color:#fff;border:none;border-radius:14px;padding:17px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;width:100%;cursor:pointer;transition:transform 0.15s;display:none;}
+.confirm-btn.visible{display:block;}
+.confirm-btn:active{transform:scale(0.98);}
+
+/* OVERLAY + SHEET */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s;backdrop-filter:blur(4px);}
+.sheet-overlay.open{opacity:1;pointer-events:all;}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:#141414;border-radius:22px 22px 0 0;z-index:201;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);max-height:92vh;display:flex;flex-direction:column;}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{width:38px;height:4px;background:#333;border-radius:2px;margin:11px auto 0;flex-shrink:0;}
+.sheet-header{padding:14px 18px 10px;border-bottom:1px solid var(--card-border);flex-shrink:0;}
+.sheet-header h2{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;}
+.sheet-header p{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* TOOLBAR */
+.sheet-toolbar{padding:10px 18px;display:flex;gap:8px;align-items:center;flex-shrink:0;border-bottom:1px solid var(--card-border);}
+.sheet-search{flex:1;background:var(--tag-bg);border:1px solid var(--card-border);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.sheet-search::placeholder{color:#555;}
+.sheet-search:focus{border-color:#444;}
+.fav-filter-btn{background:var(--tag-bg);border:1px solid var(--card-border);border-radius:10px;padding:8px 12px;font-size:16px;cursor:pointer;transition:all 0.15s;flex-shrink:0;}
+.fav-filter-btn.active{background:rgba(255,200,0,0.15);border-color:gold;}
+
+/* FILTER PILLS */
+.sheet-filters{padding:10px 18px;display:flex;gap:7px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+.sheet-filters::-webkit-scrollbar{display:none;}
+.filter-pill{background:var(--tag-bg);color:var(--text-muted);border:1px solid var(--card-border);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;transition:all 0.15s;}
+.filter-pill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* BLOCK LIST */
+.sheet-list{overflow-y:auto;padding:10px 18px 36px;flex:1;display:flex;flex-direction:column;gap:10px;}
+.no-results{text-align:center;color:var(--text-muted);font-size:14px;padding:40px 0;}
+
+/* ── BLOCK CARD ── */
+.block-card{background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:14px;padding:16px;cursor:pointer;transition:border-color 0.15s,transform 0.15s;}
+.block-card:active{transform:scale(0.985);}
+.block-card.selected{border-color:var(--accent);}
+
+.bc-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.bc-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.bc-type-tag{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:var(--accent-dim);color:var(--accent);padding:3px 8px;border-radius:4px;display:inline-block;}
+.bc-gen-tag{font-size:9px;font-weight:700;letter-spacing:1px;background:rgba(249,115,22,0.15);color:var(--orange);padding:3px 7px;border-radius:4px;text-transform:uppercase;}
+.bc-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.bc-fav-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:0;line-height:1;transition:transform 0.2s;}
+.bc-fav-btn:active{transform:scale(0.75);}
+.bc-dur{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--text-muted);}
+
+.bc-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.5px;line-height:1;margin-bottom:6px;}
+.bc-format{font-size:11px;font-weight:700;color:#fff;background:var(--accent);display:inline-block;padding:3px 9px;border-radius:4px;letter-spacing:0.3px;margin-bottom:10px;}
+.bc-exercises{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.bc-exercises li{font-size:13px;color:#CCC;padding-left:14px;position:relative;line-height:1.4;}
+.bc-exercises li::before{content:'·';position:absolute;left:0;color:var(--accent);font-size:16px;line-height:1.1;}
+
+.bc-check{position:absolute;bottom:12px;right:12px;width:24px;height:24px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:900;}
+.block-card.selected .bc-check{display:flex;}
+.block-card{position:relative;}
+
+/* ROUTINE VIEW */
+.routine-view{display:none;}
+.routine-view.visible{display:flex;flex-direction:column;gap:14px;}
+.routine-header{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.routine-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;}
+.reset-btn{background:transparent;border:1px solid var(--card-border);color:var(--text-muted);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.reset-btn:hover{border-color:#555;color:#ccc;}
+
+/* ROUTINE BLOCK */
+.routine-block{background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:16px;padding:18px;position:relative;overflow:hidden;animation:fadeUp 0.3s ease both;}
+.routine-block:nth-child(2){animation-delay:.07s}
+.routine-block:nth-child(3){animation-delay:.14s}
+.routine-block:nth-child(4){animation-delay:.21s}
+.rb-label{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:5px;}
+.rb-title-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.rb-name{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;}
+.rb-format{font-size:11px;font-weight:700;background:var(--accent);color:#fff;display:inline-block;padding:3px 9px;border-radius:4px;margin-bottom:12px;}
+.rb-exercises{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.rb-exercises li{font-size:13px;color:#DDD;display:flex;gap:7px;line-height:1.4;}
+.rb-ex-num{font-family:'Bebas Neue',sans-serif;font-size:12px;color:var(--accent);width:18px;flex-shrink:0;margin-top:2px;}
+.rb-ghost-num{position:absolute;bottom:-14px;right:10px;font-family:'Bebas Neue',sans-serif;font-size:90px;color:rgba(255,255,255,0.025);line-height:1;pointer-events:none;}
+.rb-dur-badge{position:absolute;top:14px;right:14px;background:var(--tag-bg);border:1px solid var(--card-border);border-radius:8px;padding:5px 9px;text-align:center;}
+.rb-dur-badge .db-time{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text);line-height:1;}
+.rb-pos-1{border-left:3px solid var(--accent);}
+.rb-pos-2{border-left:3px solid var(--green);}
+.rb-pos-3{border-left:3px solid var(--orange);}
+.rb-pos-4{border-left:3px solid var(--red);}
+
+/* ── TIMERS ── */
+.timers-section{display:flex;flex-direction:column;gap:10px;}
+.block-timer{background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;}
+.bt-info{flex:1;min-width:0;}
+.bt-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+.bt-name{font-family:'Bebas Neue',sans-serif;font-size:18px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bt-right{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;}
+.bt-display{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;letter-spacing:2px;color:var(--accent);transition:color 0.3s;min-width:90px;text-align:center;}
+.bt-display.running{color:#fff;}
+.bt-display.done{color:var(--red);}
+.bt-display.warning{color:var(--orange);}
+.bt-controls{display:flex;gap:6px;}
+.bt-btn{border:none;border-radius:9px;padding:8px 14px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;transition:transform 0.15s,opacity 0.15s;}
+.bt-btn:active{transform:scale(0.93);}
+.bt-start{background:var(--accent);color:#fff;}
+.bt-reset{background:var(--tag-bg);color:var(--text-muted);border:1px solid var(--card-border);}
+.bt-done-badge{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);letter-spacing:1px;display:none;}
+.bt-done-badge.show{display:block;}
+
+.timers-header{display:flex;align-items:center;justify-content:space-between;}
+.timers-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--text-muted);}
+.reset-all-timers{background:transparent;border:1px solid var(--card-border);color:var(--text-muted);border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;}
+
+.new-routine-btn{background:var(--accent);color:#fff;border:none;border-radius:14px;padding:17px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;width:100%;cursor:pointer;transition:transform 0.15s;}
+.new-routine-btn:active{transform:scale(0.98);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:380px){.slots-grid{grid-template-columns:1fr}.bt-display{font-size:30px}}
+
+/* pulse animation when timer finishes */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.bt-display.done{animation:pulse 1s ease infinite;}
+
+/* YouTube button on exercise items */
+.bs-ex-item{cursor:pointer;}
+.bs-ex-item:active{transform:scale(0.98);}
+.bs-yt-btn{
+  flex-shrink:0;
+  width:28px;height:28px;border-radius:6px;
+  background:rgba(255,0,0,0.15);border:1px solid rgba(255,0,0,0.3);
+  color:#ff4444;font-size:11px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s;
+}
+.bs-ex-item:active .bs-yt-btn{background:rgba(255,0,0,0.3);}
+.bs-ex-item.active .bs-yt-btn{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:#fff;}
+
+/* ── FULLSCREEN BLOCK VIEW ── */
+.block-screen{
+  position:fixed;inset:0;z-index:300;
+  background:var(--dark);
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
+  overflow:hidden;
+}
+.block-screen.open{transform:translateY(0);}
+
+/* top bar */
+.bs-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 12px;
+  flex-shrink:0;
+}
+.bs-close{
+  background:var(--tag-bg);border:1px solid var(--card-border);
+  color:var(--text-muted);border-radius:10px;padding:8px 14px;
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;
+  cursor:pointer;transition:all 0.15s;
+}
+.bs-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);}
+.bs-block-name{font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;text-align:right;max-width:160px;line-height:1.1;}
+
+/* PROGRESS BAR */
+.bs-progress-wrap{padding:0 18px;flex-shrink:0;margin-bottom:4px;}
+.bs-progress-track{height:5px;background:var(--card-border);border-radius:3px;overflow:hidden;}
+.bs-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 1s linear;width:100%;}
+
+/* TIMER BIG */
+.bs-timer-section{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 18px 16px;flex-shrink:0;
+}
+.bs-time-big{
+  font-family:'Bebas Neue',sans-serif;font-size:100px;line-height:1;
+  letter-spacing:4px;color:var(--accent);
+  transition:color 0.3s;
+}
+.bs-time-big.running{color:#fff;}
+.bs-time-big.warning{color:var(--orange);}
+.bs-time-big.done{color:var(--red);animation:pulse 1s ease infinite;}
+.bs-format-tag{
+  background:var(--accent);color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:0.5px;
+  padding:4px 12px;border-radius:6px;margin-top:6px;
+  text-align:center;max-width:280px;line-height:1.4;
+}
+
+/* CONTROLS */
+.bs-controls{
+  display:flex;gap:10px;padding:12px 18px;flex-shrink:0;
+}
+.bs-btn{
+  border:none;border-radius:12px;
+  font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1.5px;
+  cursor:pointer;transition:transform 0.15s,opacity 0.15s;padding:14px 0;
+}
+.bs-btn:active{transform:scale(0.95);}
+.bs-play{background:var(--accent);color:#fff;flex:1;}
+.bs-play.paused{background:var(--green);}
+.bs-reset-single{background:var(--tag-bg);color:var(--text-muted);border:1px solid var(--card-border);padding:14px 18px;}
+
+/* EXERCISE LIST */
+.bs-ex-section{
+  flex:1;overflow-y:auto;
+  padding:0 18px 24px;
+}
+.bs-ex-label{
+  font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:10px;
+}
+.bs-ex-list{display:flex;flex-direction:column;gap:8px;}
+.bs-ex-item{
+  background:var(--card-bg);border:1.5px solid var(--card-border);
+  border-radius:12px;padding:12px 14px;
+  display:flex;align-items:center;gap:12px;
+  transition:border-color 0.2s,background 0.2s;
+}
+.bs-ex-item.active{
+  border-color:var(--accent);
+  background:rgba(59,130,246,0.08);
+}
+.bs-ex-num{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;
+  color:var(--accent);width:24px;flex-shrink:0;
+}
+.bs-ex-item.active .bs-ex-num{color:#fff;}
+.bs-ex-name{font-size:14px;color:#DDD;line-height:1.4;flex:1;}
+.bs-ex-item.active .bs-ex-name{color:#fff;font-weight:600;}
+
+/* NAV DOTS */
+.bs-nav-dots{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px 14px;flex-shrink:0;
+}
+.bs-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--card-border);transition:all 0.2s;cursor:pointer;
+}
+.bs-dot.active{background:var(--accent);width:24px;border-radius:4px;}
+.bs-dot.done{background:var(--green);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">MIS RUTINAS</div>
+    <div class="header-subtitle">Seleccioná 4 bloques</div>
+  </div>
+  <div class="header-actions">
+    <button class="fav-toggle-btn" id="globalFavBtn" onclick="openFavSheet()">⭐ Favs</button>
+    <button class="shuffle-btn" id="shuffleBtn" onclick="shuffleAll()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+      RANDOM
+    </button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- PICKER -->
+  <div id="pickerSection">
+    <div class="section-label">Tu entrenamiento de hoy</div>
+    <div class="info-hint">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Bloques <span>1 y 4</span> · ~8 min &nbsp;|&nbsp; Bloques <span>2 y 3</span> · ~13-15 min
+    </div>
+    <div class="slots-grid" id="slotsGrid"></div>
+  </div>
+
+  <button class="confirm-btn" id="confirmBtn" onclick="showRoutine()">VER RUTINA COMPLETA →</button>
+
+  <!-- ROUTINE -->
+  <div class="routine-view" id="routineView">
+    <div class="routine-header">
+      <div class="routine-title">Tu rutina de hoy</div>
+      <button class="reset-btn" onclick="resetAll()">← CAMBIAR</button>
+    </div>
+
+    <!-- BLOCK TIMERS -->
+    <div class="timers-section">
+      <div class="timers-header">
+        <div class="timers-title">TEMPORIZADORES</div>
+        <button class="reset-all-timers" onclick="resetAllTimers()">↺ Reset todos</button>
+      </div>
+      <div id="timersContainer"></div>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:-8px;">
+      Tocá un bloque para abrirlo en pantalla completa
+    </div>
+
+    <!-- ROUTINE BLOCKS -->
+    <div id="routineBlocks"></div>
+
+    <button class="new-routine-btn" onclick="newRoutine()">← ARMAR NUEVA RUTINA</button>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="sheet-overlay" id="overlay" onclick="closeSheet()"></div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <h2 id="sheetTitle">ELEGÍ UN BLOQUE</h2>
+    <p id="sheetSubtitle"></p>
+  </div>
+  <div class="sheet-toolbar">
+    <input class="sheet-search" type="text" id="searchInput" placeholder="Buscar bloque..." oninput="renderBlockList()">
+    <button class="fav-filter-btn" id="favFilterBtn" onclick="toggleFavFilter()" title="Solo favoritos">⭐</button>
+  </div>
+  <div class="sheet-filters" id="sheetFilters"></div>
+  <div class="sheet-list" id="sheetList"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+const BLOCKS = [
+  // ── GRUPO A (~6-8 min) ──────────────────────
+  {id:1,  name:"Full Body",            type:"HIIT",    dur:7, group:"A", format:"AMRAP IN 7'",
+   ex:["5 Reverse Lunge + Reverse Kick","5 Alt. Single-Leg Burpees","5 Plyo Push Ups"]},
+  {id:2,  name:"Strength",             type:"Fuerza",  dur:7, group:"A", format:"AMRAP IN 7'",
+   ex:["5\" Banded Squat Hold","8 Banded Squat In & Out","5\" Banded Squat Hold","10 Banded Side Steps"]},
+  {id:3,  name:"HIIT Banded",          type:"HIIT",    dur:8, group:"A", format:"40\" ON / 20\" OFF × 8'",
+   ex:["1': Banded Touchdowns","2': Banded Jumping Squats","3': Banded Jumping Jacks","4': Banded Squat In & Out"]},
+  {id:4,  name:"HIIT Bumper",          type:"HIIT",    dur:8, group:"A", format:"40\" ON / 20\" OFF × 8'",
+   ex:["1': Bumper Rotations","2': Bumper Overhead Lunges","3': Bumper Ground To Overhead","4': Sprawls To Bumper"]},
+  {id:5,  name:"Hypertrophy",          type:"Fuerza",  dur:8, group:"A", format:"AMRAP IN 8'",
+   ex:["10 DDB Curl & Press","8 DDB Shoulder Press","15/15 Plank Shoulder Taps"]},
+  {id:6,  name:"Trad. Hypertrophy",    type:"Fuerza",  dur:6, group:"A", format:"COMPLETE 3 ROUNDS IN 6'",
+   ex:["10 DDB Front Flys","10 DDB Half Lateral Flys","8 Banded Shoulder Press"]},
+  {id:7,  name:"Trad. Hypertrophy LB", type:"HIIT",    dur:8, group:"A", format:"40\" ON / 20\" OFF × 8'",
+   ex:["1': Banded Squat","2': Banded Squat In & Out","3': Banded Lunges","4': Goblet Pulse Squat"]},
+  {id:8,  name:"Midline Flutter",      type:"Core",    dur:8, group:"A", format:"COMPLETE 4 ROUNDS IN 8'",
+   ex:["20\" Flutter Kicks","30 Bent Knee Prayer Crunches","30\" Heel Touches"]},
+  {id:9,  name:"Midline Bumper",       type:"Core",    dur:8, group:"A", format:"COMPLETE 4 ROUNDS IN 8'",
+   ex:["15 Bumper Overhead Sit-Ups","15 Bumper Tuck Ups","15\"/15\" Side Plank"]},
+  {id:10, name:"Midline Cardio",       type:"Core",    dur:6, group:"A", format:"COMPLETE 2 ROUNDS IN 6'",
+   ex:["20 Sit Ups","50 Bike Sit Ups","12 Tuck Up + V-Sit Up","60 Mountain Climbers"]},
+  {id:11, name:"Midline Crunches",     type:"Core",    dur:8, group:"A", format:"COMPLETE 3 ROUNDS IN 8'",
+   ex:["40 Crunches","12 Reverse Crunches","40 Heel Touches","12 Alt. Tuck Ups"]},
+  {id:12, name:"Midline EMOM",         type:"Core",    dur:6, group:"A", format:"EVERY 60\" × 6'",
+   ex:["3/3 Side Jack Knives","5 Hollow Rocks","8 Sit Ups"]},
+  {id:13, name:"Combined Strength",    type:"Fuerza",  dur:7, group:"A", format:"COMPLETE 3 ROUNDS IN 7'",
+   ex:["8 DDB Biceps Curl + Press","4 DDB Gumbo Biceps Curls","8 DDB Overhead Triceps Extensions"]},
+  {id:14, name:"Combined Strength KB", type:"Fuerza",  dur:8, group:"A", format:"AMRAP IN 8': POWER AND STABILITY",
+   ex:["8/8 SKB Single-Arm Thruster","10 DKB Gorilla Row","10/10 Bulgarian Squat"]},
+  {id:15, name:"Cardio Bumper",        type:"HIIT",    dur:8, group:"A", format:"40\" ON / 20\" OFF × 8'",
+   ex:["1': Bumper Squat Press Out","2': Bumper Russian Twists","3': Bumper Twisting Lunges","4': Plank Bumper Drag"]},
+  {id:16, name:"Cardio Intro",         type:"HIIT",    dur:8, group:"A", format:"AMRAP IN 8': INTRO",
+   ex:["30\" Machine","8 Goblet Cossacks","8 DKB Push Press","8 DKB High Pull"]},
+  {id:17, name:"Lower Body Kick",      type:"Glúteos", dur:8, group:"A", format:"COMPLETE 4 ROUNDS IN 8'",
+   ex:["10 Offset Squat","8/8 Banded Kick Back + Lateral Kick Back","10\" Goblet Pulse Squat","12/12 Quadruped Diagonal Kickback"]},
+  {id:18, name:"Lower Body Bridge",    type:"Glúteos", dur:6, group:"A", format:"COMPLETE 4 ROUNDS IN 6'",
+   ex:["12 KB Glute Bridge","8/8 Platform Single-Leg Glute Bridge","10 Deficit DKB Sumo Deadlift"]},
+  {id:19, name:"Lower Body Abduction", type:"Glúteos", dur:6, group:"A", format:"COMPLETE 4 ROUNDS IN 6'",
+   ex:["20\" Banded Quadruped Abduction + Fire Hydrant","12/12 Banded Quadruped Kickback","10/10 Banded Quadruped Straight Kickback"]},
+  {id:20, name:"BIGGinners",           type:"Fuerza",  dur:8, group:"A", format:"AMRAP IN 8': LOWER BUILDING",
+   ex:["6 Pulse Squats","4/4 Goblet Lunges","5/5 Single-Leg Glute Bridge","30\" Rest"]},
+  {id:21, name:"HIIT Total Body",      type:"HIIT",    dur:8, group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': Box Jump","2': DDB Devil Press","3': Lateral Burpee","4': DDB Thruster","5': Broad Jump + 2 Push Ups","6': DDB Swing","7': Alt. Jump Lunge","8': Sprawl + Tuck Jump"]},
+  {id:22, name:"HIIT Full Body",       type:"HIIT",    dur:8, group:"A", format:"40\" ON / 20\" OFF × 8'", gen:true,
+   ex:["1': Mountain Climbers","2': DDB Clean & Press","3': Box Step Up","4': Push Up + Row","5': Jump Squat","6': DDB Deadlift","7': Plank Jack","8': DDB High Pull"]},
+  {id:23, name:"Glute Burn",           type:"Glúteos", dur:8, group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': Hip Thrust con barra","2': Banded Clamshell (Der)","3': Banded Clamshell (Izq)","4': Single-Leg Glute Bridge (Der)","5': Single-Leg Glute Bridge (Izq)","6': Banded Squat Pulse","7': Quadruped Kick Back (Der)","8': Quadruped Kick Back (Izq)"]},
+  {id:24, name:"Glute Circuit",        type:"Glúteos", dur:8, group:"A", format:"COMPLETE 4 ROUNDS IN 8'", gen:true,
+   ex:["10/10 Hip Thrust + Abduction","12 Sumo Squat con KB","10/10 Step Up con empuje de cadera","15\" Glute Bridge Hold","8/8 Lateral Band Walk"]},
+  {id:25, name:"Glute HIIT",           type:"Glúteos", dur:8, group:"A", format:"30\" ON / 30\" OFF × 8'", gen:true,
+   ex:["1': Jump Squat","2': Hip Thrust explosivo","3': Curtsy Lunge (Der)","4': Curtsy Lunge (Izq)","5': Broad Jump","6': Sumo Squat Jump","7': Reverse Lunge + Kick","8': Banded Glute Bridge"]},
+  {id:26, name:"Lateral Flys",         type:"Upper",   dur:8, group:"A", format:"COMPLETE 4 ROUNDS IN 8'", gen:true,
+   ex:["12 DDB Lateral Flys","10 DDB Front Raises","8 DDB Rear Delt Flys","10\" DDB Lateral Hold","8 DDB Arnold Press","6/6 Single-Arm Lateral Fly"]},
+  {id:27, name:"Shoulder Sculptor",    type:"Upper",   dur:8, group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': DDB Lateral Flys","2': DDB Front Raise","3': DDB Rear Delt Fly","4': DDB Overhead Press","5': DDB Upright Row","6': Banded Lateral Raise","7': DDB Half-Circle Raise","8': DDB Y-Raise"]},
+  {id:28, name:"Upper Body Pump",      type:"Upper",   dur:8, group:"A", format:"AMRAP IN 8'", gen:true,
+   ex:["10 DDB Biceps Curl","8 DDB Overhead Triceps Extension","12 DDB Lateral Flys","10 DDB Hammer Curl","8 DDB Skull Crushers","10 DDB Front Raise"]},
+  {id:29, name:"Back & Shoulders",     type:"Upper",   dur:8, group:"A", format:"COMPLETE 4 ROUNDS IN 8'", gen:true,
+   ex:["10 DDB Bent Over Row","10 DDB Lateral Flys","8 DDB Rear Delt Fly","12 DDB Reverse Fly Inclinado","8 DDB Muscle Clean","10\" DDB Overhead Hold"]},
+
+  // ── GRUPO B (~12-15 min) ────────────────────
+  {id:30, name:"HIIT DDB Deadlift",    type:"HIIT",    dur:13, group:"B", format:"45\" ON / 15\" OFF × 13'",
+   ex:["1': DDB Deadlift","2': DDB Dead Snatch","3': Alt. DDB Push Press","4': Tall Plank DDB Drag"]},
+  {id:31, name:"HIIT Cardio Box",      type:"HIIT",    dur:13, group:"B", format:"30\" ON / 30\" OFF × 13'",
+   ex:["1': Jumping Jacks","2': Jumping Curtsy Lunges","3': Skipping In & Out","4': Box Dips"]},
+  {id:32, name:"HIIT Box Lateral",     type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12'",
+   ex:["1': Lateral Box Step Up","2': Single-Leg Lateral Hops (Der)","3': Single-Arm Plank Hold (Der)","4': Jumping Curtsy Lunges","5': Single-Leg Lateral Hops (Izq)","6': Single-Arm Plank Hold (Izq)"]},
+  {id:33, name:"HIIT DDB Gunslinger",  type:"HIIT",    dur:12, group:"B", format:"45\" ON / 15\" OFF × 12'",
+   ex:["1': DDB Gunslinger","2': DDB Devil Clean","3': DDB Thruster","4': DDB Hops"]},
+  {id:34, name:"HIIT Single-Leg",      type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12'",
+   ex:["1': Single-Leg Deadlift (20\"/20\")","2': Single-Leg Burpees","3': Curtsy Lunges + Runner Lunges","4': Jumping Bulgarian Squat"]},
+  {id:35, name:"HIIT Push & Press",    type:"HIIT",    dur:12, group:"B", format:"45\" ON / 15\" OFF × 12'",
+   ex:["1': DDB Push Press","2': DDB Thruster","3': Plank Jack","4': DDB Devil Clean"]},
+  {id:36, name:"HIIT Lateral Hops",    type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12'",
+   ex:["1': Single-Leg Lateral Hops (Der)","2': Single-Leg Lateral Hops (Izq)","3': Lateral Hops over the Box","4': Lateral Skipping","5': Curtsy Lunges","6': SDB Hang Snatch"]},
+  {id:37, name:"HIIT DDB Full",        type:"HIIT",    dur:14, group:"B", format:"45\" ON / 15\" OFF × 14'",
+   ex:["1': DDB Hops","2': DDB Gunslinger","3': Alt. DDB Push Press","4': DDB Dead Snatch","5': DDB Devil Clean","6': DDB Deadlift + Bent Over Row","7': Tall Plank DDB Drag"]},
+  {id:38, name:"HIIT Barbell",         type:"HIIT",    dur:12, group:"B", format:"30\" ON / 30\" OFF × 12'",
+   ex:["1': Barbell Deadlift","2': Barbell Power Clean","3': Barbell Hang Power Clean + Push Press","4': Barbell Front Rack Lunges"]},
+  {id:39, name:"HIIT Machine",         type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12': HIIT",
+   ex:["1': Jumping Jacks","2': Sprawl to Box Jump","3': Machine","4': Mountain Climbers + Push Up"]},
+  {id:40, name:"Full Body DDB",        type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12': HIIT",
+   ex:["1': DDB Thruster","2': DDB Hang Clean & Jerk","3': DDB Deadlift","4': DDB Dead Snatch","5': DDB Burpees","6': Machine"]},
+  {id:41, name:"Full Body 7 Mov.",     type:"HIIT",    dur:14, group:"B", format:"40\" ON / 20\" OFF × 14'",
+   ex:["1': DDB Dead Snatch","2': DDB Hang Clean & Jerk","3': DDB Box Step Ups","4': Machine","5': DDB Devil Press","6': DDB Thruster","7': DDB Burpees"]},
+  {id:42, name:"HRX Training",         type:"Fuerza",  dur:12, group:"B", format:"COMPLETE 4 ROUNDS IN 12'",
+   ex:["60\" Machine","8 DDB Deadlift","8 DDB Dead Snatch","8 DDB Front Squat","6 Toes to Bar"]},
+  {id:43, name:"HRX Wall Ball",        type:"Fuerza",  dur:13, group:"B", format:"COMPLETE 4 ROUNDS IN 13'",
+   ex:["15 Wall Ball","10 Burpee Broad Jump","10 Box Jumps","40\" DDB Overhead Hold"]},
+  {id:44, name:"Combined Strength DDB",type:"Fuerza",  dur:12, group:"B", format:"COMPLETE 3 ROUNDS IN 12'",
+   ex:["8 DDB Front Squat","12 DDB Overhead Lunges","8 DDB Thruster","10 DDB Push Press","10 DDB Chest Press"]},
+  {id:45, name:"Lower Body Hip Thrust",type:"Glúteos", dur:14, group:"B", format:"COMPLETE 5 ROUNDS IN 14'",
+   ex:["8 Barbell Hip Thrust","6/6 DDB Box Step Ups","10 Box Reverse Hypers","8/8 Banded Clamshell"]},
+  {id:46, name:"Lower Body Banded",    type:"Glúteos", dur:14, group:"B", format:"COMPLETE 2 ROUNDS IN 14'",
+   ex:["30 Banded Jumping Jacks","25/25 Banded Diagonal Steps","25/25 Banded Lunges","25/25 Banded Heidens","25/25 Banded Clamshell"]},
+  {id:47, name:"Lower Body Quality",   type:"Glúteos", dur:14, group:"B", format:"FOR QUALITY IN 14' — 4 Rounds",
+   ex:["6/6 DKB Farmer Bulgarian Squat","8 Barbell Good Morning","30\" Rest","8 Heels Elevated Goblet Squat","12 Goblet Calf Raises"]},
+  {id:48, name:"Midline KB",           type:"Core",    dur:12, group:"B", format:"COMPLETE 4 ROUNDS IN 12': MIDLINE",
+   ex:["10 KB Glute Bridge","10 Windshield Wipers over the KB","20\" KB Russian Twist"]},
+  {id:49, name:"Midline Bumper 15-9",  type:"Core",    dur:14, group:"B", format:"COMPLETE 15 A 9 IN 14'",
+   ex:["Prayer Crunches","Bumper Tuck Ups","Bumper Overhead Sit-Ups","Sprawls To Bumper"]},
+  {id:50, name:"Midline EMOM 120\"",   type:"Core",    dur:12, group:"B", format:"EVERY 120\" × 12'",
+   ex:["15 Prayer Sit Ups","20 Bent Knee Prayer Crunches","20\" Plank Seesaw","20\" Plank Shoulder Taps"]},
+  {id:51, name:"Hypertrophy Shoulders",type:"Upper",   dur:14, group:"B", format:"COMPLETE",
+   ex:["15-12-10-8 Barbell Shoulder Press","12 DDB Seated Lateral Flys","12 Seated DDB Reverse Flys","8 Decline Shoulder Taps"]},
+  {id:52, name:"Upper Body Barbell",   type:"Upper",   dur:12, group:"B", format:"COMPLETE 5 ROUNDS IN 12': BARBELL COMPLEX",
+   ex:["8 Barbell Bent Over Row","7 Barbell Muscle Clean","6 Barbell Shoulder Press","7 Barbell Push Press","8 Barbell Bent Over Row"]},
+  {id:53, name:"Cardio Structure DDB", type:"HIIT",    dur:12, group:"B", format:"COMPLETE 4 A 12: STRUCTURE IN 12'",
+   ex:["DDB Dead Snatch","DDB Thrusters","DDB Devil Clean","DDB Front Rack Lunges"]},
+  {id:54, name:"Cardio Platform",      type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12': HIIT",
+   ex:["1': Box Step Up","2': Sprawl To Platform","3': Prayer Crunches","4': Platform Skipping In & Out"]},
+  {id:55, name:"HIIT 30/30",           type:"HIIT",    dur:12, group:"B", format:"30\" ON / 30\" OFF × 12'",
+   ex:["1': Squat + Lateral Hop","2': Single-Leg Deadlift","3': Single-Leg Pulse Lunges","4': TRX Row"]},
+  // Generados B
+  {id:60, name:"HIIT Inferno",         type:"HIIT",    dur:12, group:"B", format:"45\" ON / 15\" OFF × 12'", gen:true,
+   ex:["1': DDB Snatch (Der)","2': DDB Snatch (Izq)","3': Box Jump","4': DDB Devil Press","5': Lateral Burpee","6': Jump Squat + Hold","7': DDB Swing","8': Sprawl + Push Up","9': Lateral Hop","10': DDB Thruster","11': Mountain Climbers","12': All Out Sprint in Place"]},
+  {id:61, name:"HIIT Power 15'",       type:"HIIT",    dur:15, group:"B", format:"40\" ON / 20\" OFF × 15'", gen:true,
+   ex:["1': Goblet Squat Jump","2': DDB Push Press","3': Alt. Box Step Up","4': DDB Hang Clean","5': Lateral Skipping","6': DDB Bent Over Row","7': Tuck Jump","8': DDB Romanian Deadlift","9': High Knees","10': DDB Thruster","11': Box Lateral Hop","12': DDB Devil Clean","13': Jumping Curtsy Lunge","14': DDB Deadlift + Upright Row","15': Sprawl to Jump"]},
+  {id:62, name:"HIIT Cardio 360",      type:"HIIT",    dur:12, group:"B", format:"40\" ON / 20\" OFF × 12'", gen:true,
+   ex:["1': Machine","2': Box Step Up","3': Jumping Jacks","4': Jump Squat","5': Lateral Hop","6': High Knees","7': Sprawl to Box Jump","8': Tuck Jump","9': Skipping In & Out","10': Broad Jump","11': Ski Jump","12': All Out Burpees"]},
+  {id:63, name:"Core Fuego",           type:"Core",    dur:12, group:"B", format:"30\" ON / 30\" OFF × 12'", gen:true,
+   ex:["1': Plank Hold","2': Bicycle Crunches","3': Leg Raises","4': Russian Twist","5': Plank to Push Up","6': V-Sit Hold","7': Mountain Climbers","8': Hollow Body Rock","9': Side Plank (Der)","10': Side Plank (Izq)","11': Tuck Crunches","12': Dead Bug"]},
+  {id:64, name:"Glute Power",          type:"Glúteos", dur:13, group:"B", format:"45\" ON / 15\" OFF × 13'", gen:true,
+   ex:["1': Hip Thrust Barbell","2': Single-Leg Hip Thrust (Der)","3': Single-Leg Hip Thrust (Izq)","4': Banded Clamshell (Der)","5': Banded Clamshell (Izq)","6': Sumo Deadlift","7': Glute Bridge con pausa","8': Banded Squat Walk (Der)","9': Banded Squat Walk (Izq)","10': Quadruped Kick Back (Der)","11': Quadruped Kick Back (Izq)","12': Jump Squat","13': Hip Thrust Explosivo"]},
+  {id:65, name:"Booty Builder",        type:"Glúteos", dur:15, group:"B", format:"COMPLETE 5 ROUNDS IN 15'", gen:true,
+   ex:["10 Barbell Hip Thrust","8/8 Bulgarian Split Squat","12 Sumo Deadlift con KB","10/10 Lateral Band Walk","15 Glute Bridge Pulse","8/8 Single-Leg Romanian Deadlift"]},
+  {id:66, name:"Lower Burn",           type:"Glúteos", dur:12, group:"B", format:"40\" ON / 20\" OFF × 12'", gen:true,
+   ex:["1': Banded Squat","2': Hip Thrust","3': Curtsy Lunge (Der)","4': Curtsy Lunge (Izq)","5': Banded Kick Back (Der)","6': Banded Kick Back (Izq)","7': Sumo Squat","8': Glute Bridge Hold","9': Jump Squat","10': Step Up (Der)","11': Step Up (Izq)","12': Banded Clamshell"]},
+  {id:67, name:"Shoulder & Arms",      type:"Upper",   dur:12, group:"B", format:"45\" ON / 15\" OFF × 12'", gen:true,
+   ex:["1': DDB Lateral Flys","2': DDB Front Raises","3': DDB Rear Delt Fly","4': DDB Biceps Curl","5': DDB Triceps Kickback","6': DDB Overhead Press","7': DDB Hammer Curl","8': DDB Skull Crushers","9': DDB Upright Row","10': DDB Lateral Raise (Der)","11': DDB Lateral Raise (Izq)","12': DDB Arnold Press"]},
+  {id:68, name:"Upper Body Complete",  type:"Upper",   dur:15, group:"B", format:"COMPLETE 5 ROUNDS IN 15'", gen:true,
+   ex:["8 DDB Lateral Flys","8 DDB Rear Delt Fly","8 DDB Front Raise","10 DDB Biceps Curl","8 DDB Triceps Extension","10\" DDB Lateral Hold","6/6 Single-Arm Row"]},
+  {id:69, name:"Fly & Press",          type:"Upper",   dur:12, group:"B", format:"30\" ON / 30\" OFF × 12'", gen:true,
+   ex:["1': DDB Lateral Flys","2': DDB Arnold Press","3': DDB Front Raise","4': DDB Rear Delt Fly","5': DDB Overhead Press","6': DDB Upright Row","7': DDB Lateral Flys","8': DDB Shoulder Press","9': DDB Y-Raise","10': DDB Bent Over Lateral Fly","11': DDB Half-Circle Raise","12': DDB Three-Way Fly"]},
+];
+
+const GROUP_A = BLOCKS.filter(b=>b.group==="A");
+const GROUP_B = BLOCKS.filter(b=>b.group==="B");
+
+// ── STATE ──
+let selectedSlots = [null,null,null,null];
+let activeSlotIdx = null;
+let activeFilter  = "Todos";
+let favFilterOn   = false;
+let favSheetMode  = false;
+let favorites     = JSON.parse(localStorage.getItem("gymFavs")||"[]");
+
+function saveFavs(){ localStorage.setItem("gymFavs", JSON.stringify(favorites)); }
+function isFav(id){ return favorites.includes(id); }
+function toggleFav(id, e){
+  e.stopPropagation();
+  isFav(id) ? favorites=favorites.filter(f=>f!==id) : favorites.push(id);
+  saveFavs();
+  renderBlockList();
+}
+
+// ── GLOBAL FAV SHEET ──
+function openFavSheet(){
+  favSheetMode=true; activeSlotIdx=null; activeFilter="Todos"; favFilterOn=false;
+  document.getElementById("searchInput").value="";
+  document.getElementById("favFilterBtn").classList.remove("active");
+  document.getElementById("sheetTitle").textContent="MIS FAVORITOS";
+  document.getElementById("sheetSubtitle").textContent="Bloques marcados con ⭐";
+  renderFilters(null);
+  renderBlockList();
+  document.getElementById("overlay").classList.add("open");
+  document.getElementById("sheet").classList.add("open");
+}
+
+// ── SLOTS ──
+function renderSlots(){
+  const grid=document.getElementById("slotsGrid");
+  grid.innerHTML="";
+  selectedSlots.forEach((block,i)=>{
+    const d=document.createElement("div");
+    d.className="slot"+(block?" filled":"");
+    d.onclick=()=>openSheet(i);
+    d.innerHTML=block?`
+      <div>
+        <div class="slot-badge">BLOQUE ${i+1}</div>
+        <div class="slot-name">${block.name}</div>
+        <div class="slot-format">${block.format}</div>
+        <div class="slot-dur">⏱ ${block.dur}'</div>
+      </div>
+      <div class="slot-number">${i+1}</div>
+    `:`
+      <div class="slot-badge">BLOQUE ${i+1}</div>
+      <div class="slot-empty-hint"><div class="plus">+</div><span>Elegir</span></div>
+      <div class="slot-number">${i+1}</div>
+    `;
+    grid.appendChild(d);
+  });
+  const filled=selectedSlots.filter(Boolean);
+  document.getElementById("confirmBtn").className=filled.length===4?"confirm-btn visible":"confirm-btn";
+}
+
+// ── OPEN SHEET (slot) ──
+function openSheet(idx){
+  favSheetMode=false; activeSlotIdx=idx; activeFilter="Todos"; favFilterOn=false;
+  document.getElementById("searchInput").value="";
+  document.getElementById("favFilterBtn").classList.remove("active");
+  const g=(idx===0||idx===3)?"A":"B";
+  document.getElementById("sheetTitle").textContent=`ELEGÍ BLOQUE ${idx+1}`;
+  document.getElementById("sheetSubtitle").textContent=g==="A"?"~8 min (posición 1 ó 4)":"~12-15 min (posición 2 ó 3)";
+  renderFilters(g);
+  renderBlockList();
+  document.getElementById("overlay").classList.add("open");
+  document.getElementById("sheet").classList.add("open");
+}
+
+function closeSheet(){
+  document.getElementById("overlay").classList.remove("open");
+  document.getElementById("sheet").classList.remove("open");
+  activeSlotIdx=null; favSheetMode=false;
+}
+
+// ── FILTERS ──
+function renderFilters(group){
+  const pool = favSheetMode ? BLOCKS.filter(b=>isFav(b.id)) : (group==="A"?GROUP_A:GROUP_B);
+  const types=["Todos",...new Set(pool.map(b=>b.type))];
+  document.getElementById("sheetFilters").innerHTML=types.map(t=>`
+    <div class="filter-pill${t===activeFilter?" active":""}" onclick="setFilter('${t}')">${t}</div>
+  `).join("");
+}
+
+function setFilter(type){
+  activeFilter=type;
+  const g=activeSlotIdx!==null?(activeSlotIdx===0||activeSlotIdx===3?"A":"B"):null;
+  renderFilters(g);
+  renderBlockList();
+}
+
+function toggleFavFilter(){
+  favFilterOn=!favFilterOn;
+  document.getElementById("favFilterBtn").classList.toggle("active",favFilterOn);
+  renderBlockList();
+}
+
+// ── BLOCK LIST ──
+function renderBlockList(){
+  const q=document.getElementById("searchInput").value.toLowerCase();
+  const g=activeSlotIdx!==null?(activeSlotIdx===0||activeSlotIdx===3?"A":"B"):null;
+
+  let pool;
+  if(favSheetMode) pool=BLOCKS.filter(b=>isFav(b.id));
+  else pool=g==="A"?GROUP_A:GROUP_B;
+
+  if(favFilterOn) pool=pool.filter(b=>isFav(b.id));
+  if(activeFilter!=="Todos") pool=pool.filter(b=>b.type===activeFilter);
+  if(q) pool=pool.filter(b=>
+    b.name.toLowerCase().includes(q)||
+    b.type.toLowerCase().includes(q)||
+    b.ex.some(e=>e.toLowerCase().includes(q))
+  );
+
+  const list=document.getElementById("sheetList");
+  if(!pool.length){list.innerHTML=`<div class="no-results">${favSheetMode?"⭐ Aún no tenés favoritos":"Sin resultados 🔍"}</div>`;return;}
+
+  list.innerHTML=pool.map(b=>{
+    const sel=activeSlotIdx!==null && selectedSlots[activeSlotIdx]?.id===b.id;
+    const fav=isFav(b.id);
+    const clickable=activeSlotIdx!==null;
+    return `<div class="block-card${sel?" selected":""}" ${clickable?`onclick="selectBlock(${b.id})"`:""}>
+      <div class="bc-top-row">
+        <div class="bc-tags">
+          <span class="bc-type-tag">${b.type}</span>
+          ${b.gen?`<span class="bc-gen-tag">GEN</span>`:""}
+        </div>
+        <div class="bc-right">
+          <button class="bc-fav-btn" onclick="toggleFav(${b.id},event)">${fav?"⭐":"☆"}</button>
+          <span class="bc-dur">⏱ ${b.dur}'</span>
+        </div>
+      </div>
+      <div class="bc-name">${b.name}</div>
+      <div class="bc-format">${b.format}</div>
+      <ul class="bc-exercises">
+        ${b.ex.map(e=>`<li>${e}</li>`).join("")}
+      </ul>
+      <div class="bc-check">✓</div>
+    </div>`;
+  }).join("");
+}
+
+// ── SELECT BLOCK ──
+function selectBlock(id){
+  if(activeSlotIdx===null) return;
+  selectedSlots[activeSlotIdx]=BLOCKS.find(b=>b.id===id);
+  closeSheet();
+  renderSlots();
+}
+
+// ── SHUFFLE ──
+function shuffleAll(){
+  const pick=(arr,exc)=>{const p=arr.filter(b=>b.id!==exc?.id);return p[Math.floor(Math.random()*p.length)];};
+  selectedSlots[0]=pick(GROUP_A);
+  selectedSlots[3]=pick(GROUP_A,selectedSlots[0]);
+  selectedSlots[1]=pick(GROUP_B);
+  selectedSlots[2]=pick(GROUP_B,selectedSlots[1]);
+  document.getElementById("routineView").classList.remove("visible");
+  document.getElementById("pickerSection").style.display="";
+  document.getElementById("confirmBtn").className="confirm-btn";
+  stopAllTimers();
+  renderSlots();
+  const btn=document.getElementById("shuffleBtn");
+  btn.style.transform="scale(0.85) rotate(-15deg)";
+  setTimeout(()=>btn.style.transform="",250);
+}
+
+// ══════════════════════════════════════════════
+// TIMERS (per block, countdown)
+// ══════════════════════════════════════════════
+const timerState=[]; // {total, remaining, running, interval, done}
+
+function initTimers(){
+  timerState.length=0;
+  selectedSlots.forEach(b=>{
+    timerState.push({total:b.dur*60, remaining:b.dur*60, running:false, interval:null, done:false});
+  });
+}
+
+function stopAllTimers(){
+  timerState.forEach(t=>{if(t.interval){clearInterval(t.interval);t.interval=null;}});
+}
+
+function resetAllTimers(){
+  timerState.forEach((t,i)=>{
+    clearInterval(t.interval); t.interval=null; t.running=false; t.done=false;
+    t.remaining=t.total;
+    updateTimerDisplay(i);
+  });
+}
+
+// ── AUDIO (Web Audio API beeps) ──
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function beep(freq, dur, vol=0.4, type='sine'){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+  osc.start(); osc.stop(audioCtx.currentTime + dur);
+}
+
+function beepCountdown(){ beep(440, 0.18, 0.5, 'sine'); }  // tick
+function beepGo(){                                           // go! — higher double beep
+  beep(880, 0.12, 0.6, 'sine');
+  setTimeout(()=>beep(1100, 0.25, 0.7, 'sine'), 130);
+}
+function beepFinish(){                                       // block done — descending
+  beep(880, 0.15, 0.5, 'sine');
+  setTimeout(()=>beep(660, 0.15, 0.5, 'sine'), 180);
+  setTimeout(()=>beep(440, 0.35, 0.6, 'sine'), 360);
+}
+
+// overlay for 3-2-1
+function showCountdownOverlay(label, cb){
+  let el = document.getElementById('cdOverlay');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'cdOverlay';
+    el.style.cssText = `
+      position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);
+      font-family:'Bebas Neue',sans-serif;font-size:160px;color:#fff;
+      letter-spacing:4px;transition:opacity 0.2s;`;
+    document.body.appendChild(el);
+  }
+  el.style.opacity='1'; el.style.pointerEvents='all';
+  const steps = [3, 2, 1, label || 'GO!'];
+  let idx = 0;
+  function tick(){
+    const val = steps[idx];
+    el.textContent = val;
+    el.style.color = typeof val === 'number' ? '#fff' : 'var(--accent)';
+    el.style.fontSize = typeof val === 'number' ? '160px' : '100px';
+    if(typeof val === 'number') beepCountdown();
+    else beepGo();
+    idx++;
+    if(idx < steps.length){ setTimeout(tick, 900); }
+    else {
+      setTimeout(()=>{
+        el.style.opacity='0'; el.style.pointerEvents='none';
+        cb();
+      }, 600);
+    }
+  }
+  tick();
+}
+
+function startTimerAfterCountdown(i){
+  const t=timerState[i];
+  if(t.done || t.running) return;
+  const btn=document.getElementById(`timerBtn_${i}`);
+  if(btn){ btn.disabled=true; btn.textContent='...'; }
+  showCountdownOverlay('GO!', ()=>{
+    if(btn) btn.disabled=false;
+    t.running=true;
+    t.interval=setInterval(()=>{
+      t.remaining--;
+      if(t.remaining<=0){
+        t.remaining=0; t.done=true; t.running=false;
+        clearInterval(t.interval); t.interval=null;
+        beepFinish();
+      }
+      updateTimerDisplay(i);
+    },1000);
+    updateTimerDisplay(i);
+  });
+}
+
+function toggleBlockTimer(i){
+  const t=timerState[i];
+  if(t.done) return;
+  if(t.running){
+    // pause — no countdown needed
+    clearInterval(t.interval); t.interval=null; t.running=false;
+    updateTimerDisplay(i);
+  } else if(t.remaining === t.total){
+    // fresh start — show 3-2-1
+    startTimerAfterCountdown(i);
+  } else {
+    // resume from pause — short 1-beat beep then go
+    const btn=document.getElementById(`timerBtn_${i}`);
+    if(btn){ btn.disabled=true; btn.textContent='...'; }
+    beepCountdown();
+    setTimeout(()=>{
+      if(btn) btn.disabled=false;
+      t.running=true;
+      t.interval=setInterval(()=>{
+        t.remaining--;
+        if(t.remaining<=0){
+          t.remaining=0; t.done=true; t.running=false;
+          clearInterval(t.interval); t.interval=null;
+          beepFinish();
+        }
+        updateTimerDisplay(i);
+      },1000);
+      updateTimerDisplay(i);
+    }, 400);
+  }
+}
+
+function resetSingleTimer(i){
+  const t=timerState[i];
+  clearInterval(t.interval); t.interval=null; t.running=false; t.done=false;
+  t.remaining=t.total;
+  updateTimerDisplay(i);
+}
+
+function formatTime(s){
+  const m=Math.floor(s/60).toString().padStart(2,"0");
+  const sec=(s%60).toString().padStart(2,"0");
+  return `${m}:${sec}`;
+}
+
+function updateTimerDisplay(i){
+  const t=timerState[i];
+  // compact card elements — may be null if not rendered yet, just skip safely
+  const disp=document.getElementById(`timerDisp_${i}`);
+  const badge=document.getElementById(`timerDone_${i}`);
+  if(disp){
+    disp.textContent=formatTime(t.remaining);
+    disp.className="bt-display";
+    if(t.done) disp.classList.add("done");
+    else if(t.running) disp.classList.add("running");
+    else if(!t.done && t.remaining<=60 && t.remaining>0) disp.classList.add("warning");
+  }
+  if(badge && t.done) badge.classList.add("show");
+}
+
+// ══════════════════════════════════════════════
+// FULLSCREEN BLOCK SCREEN
+// ══════════════════════════════════════════════
+let bsIndex = 0; // which block is open
+
+function openBlockScreen(i){
+  bsIndex = i;
+  const bs = document.getElementById('blockScreen');
+  bs.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  bsRenderBlock();
+}
+
+function closeBlockScreen(){
+  document.getElementById('blockScreen').classList.remove('open');
+  document.body.style.overflow = '';
+  // sync compact timer display
+  updateTimerDisplay(bsIndex);
+}
+
+function bsRenderBlock(){
+  const b = selectedSlots[bsIndex];
+  const t = timerState[bsIndex];
+
+  // header
+  document.getElementById('bs-bloque-label').textContent = `BLOQUE ${bsIndex+1}`;
+  document.getElementById('bs-block-name').textContent = b.name;
+  document.getElementById('bs-format').textContent = b.format;
+
+  // time display
+  bsUpdateTime();
+
+  // exercises — highlight active one, tap to search YouTube
+  const exList = document.getElementById('bs-ex-list');
+  exList.innerHTML = b.ex.map((e,j) => {
+    // strip leading "1': " "2': " prefixes for cleaner search
+    const cleanName = e.replace(/^\d+['']:\s*/, '');
+    const ytQuery = encodeURIComponent('ejercicio gym ' + cleanName);
+    return `
+    <div class="bs-ex-item${j===0?' active':''}" id="bs-ex-${j}" onclick="openYT('${ytQuery}')">
+      <div class="bs-ex-num">${j+1}</div>
+      <div class="bs-ex-name">${e}</div>
+      <div class="bs-yt-btn" title="Ver en YouTube">▶</div>
+    </div>`;
+  }).join('');
+
+  // nav dots
+  const dots = document.getElementById('bs-nav-dots');
+  dots.innerHTML = selectedSlots.map((_,di) => {
+    const dt = timerState[di];
+    let cls = 'bs-dot';
+    if(di === bsIndex) cls += ' active';
+    else if(dt && dt.done) cls += ' done';
+    return `<div class="${cls}" onclick="bsGoTo(${di})"></div>`;
+  }).join('');
+
+  // play button
+  bsUpdatePlayBtn();
+}
+
+function bsGoTo(i){
+  bsIndex = i;
+  bsRenderBlock();
+}
+
+function bsUpdateTime(){
+  const t = timerState[bsIndex];
+  if(!t) return;
+  const disp = document.getElementById('bs-time');
+  const prog = document.getElementById('bs-progress');
+
+  disp.textContent = formatTime(t.remaining);
+  disp.className = 'bs-time-big';
+  if(t.done) disp.classList.add('done');
+  else if(t.running) disp.classList.add('running');
+  else if(t.remaining <= 60 && t.remaining > 0) disp.classList.add('warning');
+
+  // progress bar (shrinks from 100% to 0%)
+  const pct = t.total > 0 ? (t.remaining / t.total) * 100 : 0;
+  prog.style.width = pct + '%';
+  // color the bar
+  if(t.remaining <= 60 && !t.done) prog.style.background = 'var(--orange)';
+  else if(t.done) prog.style.background = 'var(--red)';
+  else prog.style.background = 'var(--accent)';
+
+  // highlight current exercise based on elapsed time (for HIIT minute-by-minute blocks)
+  const elapsed = t.total - t.remaining;
+  const b = selectedSlots[bsIndex];
+  const totalEx = b.ex.length;
+  const secPerEx = t.total / totalEx;
+  const currentEx = Math.min(Math.floor(elapsed / secPerEx), totalEx - 1);
+  b.ex.forEach((_,j) => {
+    const el = document.getElementById(`bs-ex-${j}`);
+    if(el) el.className = 'bs-ex-item' + (j === currentEx && t.running ? ' active' : '');
+  });
+}
+
+function bsUpdatePlayBtn(){
+  const t = timerState[bsIndex];
+  const btn = document.getElementById('bs-play-btn');
+  if(!t || !btn) return;
+  if(t.done){ btn.textContent = 'COMPLETADO ✓'; btn.disabled = true; btn.className = 'bs-btn bs-play'; return; }
+  btn.disabled = false;
+  if(t.running){ btn.textContent = '⏸ PAUSAR'; btn.className = 'bs-btn bs-play paused'; }
+  else if(t.remaining < t.total){ btn.textContent = '▶ CONTINUAR'; btn.className = 'bs-btn bs-play'; }
+  else { btn.textContent = '▶ INICIAR'; btn.className = 'bs-btn bs-play'; }
+}
+
+function bsToggle(){
+  const t = timerState[bsIndex];
+  if(!t || t.done) return;
+  if(t.running){
+    // pause
+    clearInterval(t.interval); t.interval=null; t.running=false;
+    bsUpdatePlayBtn(); bsUpdateTime();
+    updateTimerDisplay(bsIndex);
+  } else if(t.remaining === t.total){
+    // fresh start — 3-2-1
+    const btn = document.getElementById('bs-play-btn');
+    btn.disabled=true; btn.textContent='...';
+    showCountdownOverlay('GO!', ()=>{
+      btn.disabled=false;
+      t.running=true;
+      t.interval=setInterval(()=>{
+        t.remaining--;
+        if(t.remaining<=0){
+          t.remaining=0; t.done=true; t.running=false;
+          clearInterval(t.interval); t.interval=null;
+          beepFinish();
+          bsRenderBlock();
+        }
+        bsUpdateTime(); bsUpdatePlayBtn();
+        updateTimerDisplay(bsIndex);
+      },1000);
+      bsUpdatePlayBtn(); bsUpdateTime();
+    });
+  } else {
+    // resume
+    beepCountdown();
+    setTimeout(()=>{
+      t.running=true;
+      t.interval=setInterval(()=>{
+        t.remaining--;
+        if(t.remaining<=0){
+          t.remaining=0; t.done=true; t.running=false;
+          clearInterval(t.interval); t.interval=null;
+          beepFinish();
+          bsRenderBlock();
+        }
+        bsUpdateTime(); bsUpdatePlayBtn();
+        updateTimerDisplay(bsIndex);
+      },1000);
+      bsUpdatePlayBtn(); bsUpdateTime();
+    }, 400);
+  }
+}
+
+function bsReset(){
+  const t = timerState[bsIndex];
+  if(!t) return;
+  clearInterval(t.interval); t.interval=null; t.running=false; t.done=false;
+  t.remaining = t.total;
+  bsUpdateTime(); bsUpdatePlayBtn(); bsRenderBlock();
+  updateTimerDisplay(bsIndex);
+}
+
+// ── SHOW ROUTINE ──
+function showRoutine(){
+  document.getElementById("pickerSection").style.display="none";
+  document.getElementById("confirmBtn").className="confirm-btn";
+  const view=document.getElementById("routineView");
+  view.classList.add("visible");
+
+  initTimers();
+
+  // Build compact timer cards (tap to open fullscreen)
+  const tc=document.getElementById("timersContainer");
+  tc.innerHTML=selectedSlots.map((b,i)=>`
+    <div class="block-timer" style="cursor:pointer" onclick="openBlockScreen(${i})">
+      <div class="bt-info">
+        <div class="bt-label">BLOQUE ${i+1}</div>
+        <div class="bt-name">${b.name}</div>
+        <div class="bt-done-badge" id="timerDone_${i}">COMPLETADO ✓</div>
+      </div>
+      <div class="bt-right">
+        <div class="bt-display" id="timerDisp_${i}">${formatTime(b.dur*60)}</div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;text-align:center">TOCAR PARA ABRIR</div>
+      </div>
+    </div>
+  `).join("");
+
+  // Build routine blocks
+  const rb=document.getElementById("routineBlocks");
+  rb.innerHTML=selectedSlots.map((b,i)=>`
+    <div class="routine-block rb-pos-${i+1}" style="cursor:pointer" onclick="openBlockScreen(${i})">
+      <div class="rb-label">BLOQUE ${i+1}</div>
+      <div class="rb-title-row">
+        <div class="rb-name">${b.name}</div>
+        ${b.gen?`<span class="bc-gen-tag">GEN</span>`:""}
+        ${isFav(b.id)?`<span style="font-size:15px">⭐</span>`:""}
+      </div>
+      <div class="rb-format">${b.format}</div>
+      <ul class="rb-exercises">
+        ${b.ex.map((e,j)=>`<li><span class="rb-ex-num">${j+1}</span><span>${e}</span></li>`).join("")}
+      </ul>
+      <div class="rb-dur-badge"><div class="db-time">${b.dur}'</div></div>
+      <div class="rb-ghost-num">${i+1}</div>
+    </div>
+  `).join("")+`
+    <div class="info-hint">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Tiempo total estimado: <span>${selectedSlots.reduce((s,b)=>s+b.dur,0)} minutos</span>
+    </div>
+  `;
+
+  view.scrollIntoView({behavior:"smooth"});
+}
+
+// ── BACK TO PICKER (keeps selection) ──
+function resetAll(){
+  stopAllTimers();
+  document.getElementById("routineView").classList.remove("visible");
+  document.getElementById("pickerSection").style.display="";
+  const filled = selectedSlots.filter(Boolean);
+  document.getElementById("confirmBtn").className = filled.length===4 ? "confirm-btn visible" : "confirm-btn";
+  renderSlots();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+// ── FULL RESET (new routine) ──
+function newRoutine(){
+  stopAllTimers();
+  selectedSlots=[null,null,null,null];
+  document.getElementById("routineView").classList.remove("visible");
+  document.getElementById("pickerSection").style.display="";
+  document.getElementById("confirmBtn").className="confirm-btn";
+  renderSlots();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+// ── YOUTUBE SEARCH ──
+function openYT(query){
+  window.open('https://www.youtube.com/results?search_query=' + query, '_blank');
+}
+
+// INIT
+renderSlots();
+</script>
+
+<!-- FULLSCREEN BLOCK SCREEN -->
+<div class="block-screen" id="blockScreen">
+  <div class="bs-topbar">
+    <button class="bs-close" onclick="closeBlockScreen()">↓ CERRAR</button>
+    <div style="text-align:right">
+      <div class="bs-label" id="bs-bloque-label">BLOQUE 1</div>
+      <div class="bs-block-name" id="bs-block-name"></div>
+    </div>
+  </div>
+  <div class="bs-progress-wrap">
+    <div class="bs-progress-track"><div class="bs-progress-fill" id="bs-progress"></div></div>
+  </div>
+  <div class="bs-timer-section">
+    <div class="bs-time-big" id="bs-time">08:00</div>
+    <div class="bs-format-tag" id="bs-format"></div>
+  </div>
+  <div class="bs-controls">
+    <button class="bs-btn bs-play" id="bs-play-btn" onclick="bsToggle()">▶ INICIAR</button>
+    <button class="bs-btn bs-reset-single" onclick="bsReset()">↺</button>
+  </div>
+  <div class="bs-ex-section">
+    <div class="bs-ex-label">EJERCICIOS</div>
+    <div class="bs-ex-list" id="bs-ex-list"></div>
+  </div>
+  <div class="bs-nav-dots" id="bs-nav-dots"></div>
+</div>
+</body>
+</html>
