@@ -106,8 +106,16 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 .bc-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.5px;line-height:1;margin-bottom:6px;}
 .bc-format{font-size:11px;font-weight:700;color:#fff;background:var(--accent);display:inline-block;padding:3px 9px;border-radius:4px;letter-spacing:0.3px;margin-bottom:10px;}
 .bc-exercises{list-style:none;display:flex;flex-direction:column;gap:5px;}
-.bc-exercises li{font-size:13px;color:#CCC;padding-left:14px;position:relative;line-height:1.4;}
+.bc-exercises li{font-size:13px;color:#CCC;padding-left:14px;position:relative;line-height:1.4;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .bc-exercises li::before{content:'·';position:absolute;left:0;color:var(--accent);font-size:16px;line-height:1.1;}
+.bc-ex-text{flex:1;}
+.bc-ex-vid-btn{
+  flex-shrink:0;background:none;border:1px solid rgba(255,0,0,0.25);
+  color:rgba(255,80,80,0.7);border-radius:5px;
+  padding:2px 7px;font-size:10px;cursor:pointer;
+  transition:all 0.15s;line-height:1.4;
+}
+.bc-ex-vid-btn:hover{background:rgba(255,0,0,0.15);color:#ff4444;border-color:rgba(255,0,0,0.4);}
 
 .bc-check{position:absolute;bottom:12px;right:12px;width:24px;height:24px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:900;}
 .block-card.selected .bc-check{display:flex;}
@@ -292,6 +300,70 @@ body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;m
 }
 .bs-dot.active{background:var(--accent);width:24px;border-radius:4px;}
 .bs-dot.done{background:var(--green);}
+
+/* ── VIDEO PANEL ── */
+.video-panel {
+  position:fixed;bottom:0;left:0;right:0;z-index:400;
+  background:#141414;
+  border-radius:20px 20px 0 0;
+  transform:translateY(100%);
+  transition:transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  display:flex;flex-direction:column;
+  max-height:80vh;
+}
+.video-panel.open { transform:translateY(0); }
+.vp-handle { width:36px;height:4px;background:#333;border-radius:2px;margin:10px auto 0;flex-shrink:0; }
+.vp-header {
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:12px 18px 10px;flex-shrink:0;
+  border-bottom:1px solid var(--card-border);
+  gap:12px;
+}
+.vp-title { font-family:'Bebas Neue',sans-serif;font-size:18px;line-height:1.2;flex:1; }
+.vp-close {
+  background:var(--tag-bg);border:1px solid var(--card-border);
+  color:var(--text-muted);border-radius:8px;
+  padding:6px 12px;font-size:12px;font-weight:700;
+  cursor:pointer;letter-spacing:0.5px;flex-shrink:0;
+}
+.vp-frame-wrap {
+  position:relative;width:100%;
+  padding-bottom:56.25%; /* 16:9 */
+  background:#000;flex-shrink:0;
+}
+.vp-frame-wrap iframe {
+  position:absolute;top:0;left:0;width:100%;height:100%;border:none;
+}
+.vp-loading {
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;
+  background:#0D0D0D;color:var(--text-muted);font-size:13px;
+}
+.vp-spinner {
+  width:28px;height:28px;border:3px solid var(--card-border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vp-alt {
+  padding:14px 18px;flex-shrink:0;border-top:1px solid var(--card-border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.vp-alt-txt { font-size:11px;color:var(--text-muted); }
+.vp-yt-btn {
+  background:rgba(255,0,0,0.15);border:1px solid rgba(255,0,0,0.3);
+  color:#ff4444;border-radius:8px;padding:7px 12px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+}
+/* overlay behind video panel */
+.vp-overlay {
+  position:fixed;inset:0;z-index:399;
+  background:rgba(0,0,0,0.6);
+  opacity:0;pointer-events:none;transition:opacity 0.25s;
+  backdrop-filter:blur(3px);
+}
+.vp-overlay.open{opacity:1;pointer-events:all;}
 </style>
 </head>
 <body>
@@ -648,7 +720,13 @@ function renderBlockList(){
       <div class="bc-name">${b.name}</div>
       <div class="bc-format">${b.format}</div>
       <ul class="bc-exercises">
-        ${b.ex.map(e=>`<li>${e}</li>`).join("")}
+        ${b.ex.map(e=>{
+          const safeE = e.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+          return `<li>
+            <span class="bc-ex-text">${e}</span>
+            <button class="bc-ex-vid-btn" onclick="event.stopPropagation();openVideoPanel('${safeE}')" title="Ver video">▶</button>
+          </li>`;
+        }).join("")}
       </ul>
       <div class="bc-check">✓</div>
     </div>`;
@@ -881,13 +959,12 @@ function bsRenderBlock(){
   const exList = document.getElementById('bs-ex-list');
   exList.innerHTML = b.ex.map((e,j) => {
     // strip leading "1': " "2': " prefixes for cleaner search
-    const cleanName = e.replace(/^\d+['']:\s*/, '');
-    const ytQuery = encodeURIComponent('ejercicio gym ' + cleanName);
+    const safeE = e.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     return `
-    <div class="bs-ex-item${j===0?' active':''}" id="bs-ex-${j}" onclick="openYT('${ytQuery}')">
+    <div class="bs-ex-item${j===0?' active':''}" id="bs-ex-${j}" onclick="openVideoPanel(this.dataset.ex)" data-ex="${safeE}">
       <div class="bs-ex-num">${j+1}</div>
       <div class="bs-ex-name">${e}</div>
-      <div class="bs-yt-btn" title="Ver en YouTube">▶</div>
+      <div class="bs-yt-btn" title="Ver video">▶</div>
     </div>`;
   }).join('');
 
@@ -1085,9 +1162,92 @@ function newRoutine(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// ── YOUTUBE SEARCH ──
+// ══════════════════════════════════════════════
+// VIDEO PANEL
+// ══════════════════════════════════════════════
+let currentYTQuery = '';
+
+function openVideoPanel(exerciseName) {
+  // Strip leading "1': " style prefixes
+  const clean = exerciseName.replace(/^\d+['\u2019]:\s*/, '').trim();
+  currentYTQuery = 'ejercicio gym tutorial ' + clean;
+
+  document.getElementById('vpTitle').textContent = clean;
+  document.getElementById('vpLoading').style.display = 'flex';
+
+  // Use YouTube's no-cookie embed with search — we embed a search results page
+  // via the YouTube search embed trick: embed the first result by searching
+  // We use a YouTube search embed that auto-plays the first result
+  const searchQ = encodeURIComponent(currentYTQuery);
+  
+  // Build embed: use youtube-nocookie search embed
+  // Best free approach: embed youtube search via ytsearch parameter
+  const frame = document.getElementById('vpFrame');
+  
+  // Use YouTube's embed search: we craft a URL that searches and embeds top result
+  // Actually use the YouTube Data API v3 free-no-key workaround: 
+  // fetch youtube search page and extract first video ID
+  fetchYTVideoId(clean, (videoId) => {
+    if(videoId) {
+      frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    } else {
+      // fallback: embed youtube search iframe (shows results inside)
+      frame.src = `https://www.youtube.com/results?search_query=${searchQ}&embed=1`;
+      document.getElementById('vpLoading').style.display = 'none';
+    }
+  });
+
+  document.getElementById('vpOverlay').classList.add('open');
+  document.getElementById('videoPanel').classList.add('open');
+  // Timer keeps running — no pause
+}
+
+function fetchYTVideoId(query, cb) {
+  // Use YouTube's oEmbed + noembed as free proxy to get video ID
+  // Strategy: search via youtube suggest API (no key needed), then get first video
+  // We use the Invidious public API as a free YouTube search proxy
+  const q = encodeURIComponent('gym exercise tutorial ' + query);
+  
+  // Try multiple free public endpoints
+  const endpoints = [
+    `https://inv.nadeko.net/api/v1/search?q=${q}&type=video&page=1`,
+    `https://invidious.privacydev.net/api/v1/search?q=${q}&type=video&page=1`,
+    `https://yt.cdaut.de/api/v1/search?q=${q}&type=video&page=1`,
+  ];
+  
+  let tried = 0;
+  function tryNext() {
+    if(tried >= endpoints.length){ cb(null); return; }
+    fetch(endpoints[tried++], {signal: AbortSignal.timeout(4000)})
+      .then(r => r.json())
+      .then(data => {
+        const first = Array.isArray(data) && data.find(v => v.type === 'video');
+        if(first && first.videoId) cb(first.videoId);
+        else tryNext();
+      })
+      .catch(() => tryNext());
+  }
+  tryNext();
+}
+
+function closeVideoPanel() {
+  document.getElementById('vpOverlay').classList.remove('open');
+  document.getElementById('videoPanel').classList.remove('open');
+  // Stop video by clearing src
+  setTimeout(() => {
+    document.getElementById('vpFrame').src = '';
+    document.getElementById('vpLoading').style.display = 'flex';
+  }, 350);
+}
+
+function openYTDirect() {
+  window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(currentYTQuery), '_blank');
+}
+
+// Legacy wrapper (used from search button)
 function openYT(query){
-  window.open('https://www.youtube.com/results?search_query=' + query, '_blank');
+  const decoded = decodeURIComponent(query).replace('ejercicio gym ', '');
+  openVideoPanel(decoded);
 }
 
 // INIT
@@ -1119,6 +1279,33 @@ renderSlots();
     <div class="bs-ex-list" id="bs-ex-list"></div>
   </div>
   <div class="bs-nav-dots" id="bs-nav-dots"></div>
+</div>
+
+<!-- VIDEO OVERLAY -->
+<div class="vp-overlay" id="vpOverlay" onclick="closeVideoPanel()"></div>
+
+<!-- VIDEO PANEL -->
+<div class="video-panel" id="videoPanel">
+  <div class="vp-handle"></div>
+  <div class="vp-header">
+    <div class="vp-title" id="vpTitle">Ejercicio</div>
+    <button class="vp-close" onclick="closeVideoPanel()">✕ CERRAR</button>
+  </div>
+  <div class="vp-frame-wrap">
+    <div class="vp-loading" id="vpLoading">
+      <div class="vp-spinner"></div>
+      <span>Buscando video...</span>
+    </div>
+    <iframe id="vpFrame" src="" allowfullscreen allow="autoplay; encrypted-media"
+      onload="document.getElementById('vpLoading').style.display='none'"></iframe>
+  </div>
+  <div class="vp-alt">
+    <span class="vp-alt-txt">¿El video no carga? Abrilo directo en YouTube</span>
+    <button class="vp-yt-btn" id="vpYtBtn" onclick="openYTDirect()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-2.75 12 12 0 01-1.92-.12v8.38L9 9.65V4.92a12 12 0 01-1.92.12A4.83 4.83 0 013.31 7.8 4.94 4.94 0 012 11.5c0 2.73 2.24 4.94 5 4.94a5 5 0 004.27-2.4L12 15.5l.73-1.46A5 5 0 0017 16.44c2.76 0 5-2.21 5-4.94a4.94 4.94 0 00-2.41-4.81z"/></svg>
+      VER EN YOUTUBE
+    </button>
+  </div>
 </div>
 </body>
 </html>
