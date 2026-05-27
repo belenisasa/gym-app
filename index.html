@@ -1177,67 +1177,31 @@ function newRoutine(){
 let currentYTQuery = '';
 
 function openVideoPanel(exerciseName) {
-  // Strip leading "1': " style prefixes
   const clean = exerciseName.replace(/^\d+['\u2019]:\s*/, '').trim();
   currentYTQuery = 'ejercicio gym tutorial ' + clean;
 
   document.getElementById('vpTitle').textContent = clean;
-  document.getElementById('vpLoading').style.display = 'flex';
 
-  // Use YouTube's no-cookie embed with search — we embed a search results page
-  // via the YouTube search embed trick: embed the first result by searching
-  // We use a YouTube search embed that auto-plays the first result
+  // YouTube embed search: listType=search&list=QUERY loads a playlist of search results
+  // Works without API key, works on iOS Safari with youtube-nocookie.com
   const searchQ = encodeURIComponent(currentYTQuery);
-  
-  // Build embed: use youtube-nocookie search embed
-  // Best free approach: embed youtube search via ytsearch parameter
   const frame = document.getElementById('vpFrame');
-  
-  // Use YouTube's embed search: we craft a URL that searches and embeds top result
-  // Actually use the YouTube Data API v3 free-no-key workaround: 
-  // fetch youtube search page and extract first video ID
-  fetchYTVideoId(clean, (videoId) => {
-    if(videoId) {
-      frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-    } else {
-      // fallback: embed youtube search iframe (shows results inside)
-      frame.src = `https://www.youtube.com/results?search_query=${searchQ}&embed=1`;
-      document.getElementById('vpLoading').style.display = 'none';
-    }
-  });
+
+  // Show loading state
+  document.getElementById('vpLoading').style.display = 'flex';
+  document.getElementById('vpLoading').innerHTML = `
+    <div class="vp-spinner"></div>
+    <span>Cargando video...</span>
+  `;
+
+  // Use embed search playlist — no API key needed
+  frame.src = `https://www.youtube-nocookie.com/embed?listType=search&list=${searchQ}&autoplay=0&rel=0&modestbranding=1&iv_load_policy=3`;
 
   document.getElementById('vpOverlay').classList.add('open');
   document.getElementById('videoPanel').classList.add('open');
-  // Timer keeps running — no pause
 }
 
-function fetchYTVideoId(query, cb) {
-  // Use YouTube's oEmbed + noembed as free proxy to get video ID
-  // Strategy: search via youtube suggest API (no key needed), then get first video
-  // We use the Invidious public API as a free YouTube search proxy
-  const q = encodeURIComponent('gym exercise tutorial ' + query);
-  
-  // Try multiple free public endpoints
-  const endpoints = [
-    `https://inv.nadeko.net/api/v1/search?q=${q}&type=video&page=1`,
-    `https://invidious.privacydev.net/api/v1/search?q=${q}&type=video&page=1`,
-    `https://yt.cdaut.de/api/v1/search?q=${q}&type=video&page=1`,
-  ];
-  
-  let tried = 0;
-  function tryNext() {
-    if(tried >= endpoints.length){ cb(null); return; }
-    fetch(endpoints[tried++], {signal: AbortSignal.timeout(4000)})
-      .then(r => r.json())
-      .then(data => {
-        const first = Array.isArray(data) && data.find(v => v.type === 'video');
-        if(first && first.videoId) cb(first.videoId);
-        else tryNext();
-      })
-      .catch(() => tryNext());
-  }
-  tryNext();
-}
+
 
 function closeVideoPanel() {
   document.getElementById('vpOverlay').classList.remove('open');
