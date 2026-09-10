@@ -587,6 +587,126 @@ const BLOCKS = [
    ex:["8 DDB Lateral Flys","8 DDB Rear Delt Fly","8 DDB Front Raise","10 DDB Biceps Curl","8 DDB Triceps Extension","10\" DDB Lateral Hold","6/6 Single-Arm Row"]},
   {id:69, name:"Fly & Press",          type:"Upper",   dur:12, group:"B", format:"30\" ON / 30\" OFF × 12'", gen:true,
    ex:["1': DDB Lateral Flys","2': DDB Arnold Press","3': DDB Front Raise","4': DDB Rear Delt Fly","5': DDB Overhead Press","6': DDB Upright Row","7': DDB Lateral Flys","8': DDB Shoulder Press","9': DDB Y-Raise","10': DDB Bent Over Lateral Fly","11': DDB Half-Circle Raise","12': DDB Three-Way Fly"]},
+
+  // ══ NUEVOS BLOQUES — IDs 70-104 ══════════════════
+
+  // ── HIIT grupo A ──
+  {id:70, name:"HIIT Explosivo",      type:"HIIT",    dur:8,  group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': Burpee con salto","2': Squat Jump + pausa","3': Lateral Burpee","4': Plank to Push Up Jump","5': Star Jump","6': Tuck Jump","7': Broad Jump + sprint","8': Mountain Climbers"]},
+
+  {id:71, name:"HIIT Cardio Puro",    type:"HIIT",    dur:8,  group:"A", format:"30\" ON / 30\" OFF × 8'", gen:true,
+   ex:["1': High Knees","2': Jumping Jacks","3': Skipping rápido","4': Jump Rope simulation","5': Lateral shuffles","6': Sprint in place","7': Seal Jacks","8': Ice Skater hops"]},
+
+  {id:72, name:"HIIT DDB Rápido",     type:"HIIT",    dur:8,  group:"A", format:"40\" ON / 20\" OFF × 8'", gen:true,
+   ex:["1': DDB Snatch alternado","2': DDB Devil Press","3': DDB Swing","4': DDB Thruster","5': DDB Hang Clean","6': DDB Push Press","7': DDB Romanian DL","8': DDB Burpee"]},
+
+  {id:73, name:"HIIT Funcional",      type:"HIIT",    dur:8,  group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': Box Step Up rápido","2': Push Up + giro","3': Reverse Lunge + Kick","4': Plank Jack","5': Curtsy Lunge Jump","6': Pike Push Up","7': Single-Leg Hop (Der)","8': Single-Leg Hop (Izq)"]},
+
+  // ── GLÚTEOS grupo A ──
+  {id:74, name:"Glute Activate",      type:"Glúteos", dur:8,  group:"A", format:"COMPLETE 4 ROUNDS IN 8'", gen:true,
+   ex:["12 Banded Glute Bridge","10/10 Banded Clamshell","15\" Glute Bridge Hold","10/10 Banded Kick Back","12 Sumo Squat con KB","8/8 Single-Leg DL"]},
+
+  {id:75, name:"Glute Pump",          type:"Glúteos", dur:8,  group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': Hip Thrust pulse","2': Banded Squat In & Out","3': Donkey Kick (Der)","4': Donkey Kick (Izq)","5': Sumo Squat Jump","6': Glute Bridge march","7': Fire Hydrant (Der)","8': Fire Hydrant (Izq)"]},
+
+  {id:76, name:"Glute Isométrico",    type:"Glúteos", dur:6,  group:"A", format:"EVERY 60\" × 6'", gen:true,
+   ex:["60\" Glute Bridge Hold","60\" Wall Sit","60\" Banded Squat Hold","60\" Single-Leg Bridge (Der)","60\" Single-Leg Bridge (Izq)","60\" Sumo Squat Hold"]},
+
+  // ── BRAZOS grupo A ──
+  {id:77, name:"Biceps Burn",         type:"Brazos",  dur:8,  group:"A", format:"COMPLETE 4 ROUNDS IN 8'", gen:true,
+   ex:["12 DDB Biceps Curl","10 DDB Hammer Curl","8 DDB Concentration Curl (Der)","8 DDB Concentration Curl (Izq)","10 DDB Zottman Curl","8 DDB Gumbo Curl"]},
+
+  {id:78, name:"Triceps Burn",        type:"Brazos",  dur:8,  group:"A", format:"COMPLETE 4 ROUNDS IN 8'", gen:true,
+   ex:["12 DDB Triceps Kickback","10 DDB Skull Crushers","10 DDB Overhead Extension","8 Diamond Push Ups","15\" DDB Triceps Hold","10 Bench Dips"]},
+
+  {id:79, name:"Arms HIIT",           type:"Brazos",  dur:8,  group:"A", format:"40\" ON / 20\" OFF × 8'", gen:true,
+   ex:["1': DDB Biceps Curl","2': DDB Triceps Kickback","3': DDB Hammer Curl","4': DDB Skull Crushers","5': DDB Curl + Press","6': DDB Overhead Extension","7': DDB Zottman Curl","8': DDB Close-Grip Press"]},
+
+  // ── PIERNAS grupo A ──
+  {id:80, name:"Leg Burner",          type:"Piernas", dur:8,  group:"A", format:"40\" ON / 20\" OFF × 8'", gen:true,
+   ex:["1': Squat Jump","2': Reverse Lunge (Der)","3': Reverse Lunge (Izq)","4': Wall Sit","5': Lateral Lunge (Der)","6': Lateral Lunge (Izq)","7': Jump Lunge","8': Goblet Squat pulse"]},
+
+  {id:81, name:"Quad & Hamstring",    type:"Piernas", dur:8,  group:"A", format:"COMPLETE 3 ROUNDS IN 8'", gen:true,
+   ex:["10 DDB Romanian DL","8/8 DDB Bulgarian Split Squat","10 DDB Goblet Squat","8/8 DDB Step Up","10\" DDB Squat Hold"]},
+
+  // ── CORE grupo A ──
+  {id:82, name:"Core Estático",       type:"Core",    dur:8,  group:"A", format:"EVERY 60\" × 8'", gen:true,
+   ex:["60\" Plank","60\" Side Plank (Der)","60\" Side Plank (Izq)","60\" Hollow Body Hold","60\" Superman Hold","60\" V-Sit Hold","60\" Dead Bug","60\" Bear Crawl Hold"]},
+
+  {id:83, name:"Core Dinámico",       type:"Core",    dur:8,  group:"A", format:"45\" ON / 15\" OFF × 8'", gen:true,
+   ex:["1': Bicycle Crunches","2': Russian Twist","3': Leg Raises","4': Reverse Crunch","5': Toe Touches","6': Windshield Wipers","7': Mountain Climbers","8': Plank to Downdog"]},
+
+  {id:84, name:"Ab Circuit",          type:"Core",    dur:6,  group:"A", format:"COMPLETE 3 ROUNDS IN 6'", gen:true,
+   ex:["15 Crunches","12 Reverse Crunches","10 Tuck Crunches","20 Heel Touches","10 V-Sit Ups","15\" Plank hold"]},
+
+  // ══ GRUPO B ═════════════════════════════════════
+
+  // ── HIIT grupo B ──
+  {id:85, name:"HIIT Infernal",       type:"HIIT",    dur:15, group:"B", format:"45\" ON / 15\" OFF × 15'", gen:true,
+   ex:["1': Burpee","2': Jump Squat","3': Push Up","4': High Knees","5': Lateral Burpee","6': Tuck Jump","7': Mountain Climbers","8': Star Jump","9': Plank Jack","10': Broad Jump","11': Squat + Kick (Der)","12': Squat + Kick (Izq)","13': Sprint in place","14': Ice Skater","15': All Out Burpee"]},
+
+  {id:86, name:"HIIT DDB 15'",        type:"HIIT",    dur:15, group:"B", format:"40\" ON / 20\" OFF × 15'", gen:true,
+   ex:["1': DDB Thruster","2': DDB Devil Press","3': DDB Deadlift","4': DDB Swing","5': DDB Hang Clean","6': DDB Snatch (Der)","7': DDB Snatch (Izq)","8': DDB Push Press","9': DDB Romanian DL","10': DDB Renegade Row","11': DDB Lateral Lunge","12': DDB Clean & Press","13': DDB Front Squat","14': DDB Bent Over Row","15': DDB Burpee"]},
+
+  {id:87, name:"HIIT Mixto",          type:"HIIT",    dur:13, group:"B", format:"45\" ON / 15\" OFF × 13'", gen:true,
+   ex:["1': Box Jump","2': DDB Thruster","3': Jumping Jacks","4': DDB Devil Clean","5': Broad Jump","6': DDB Swing","7': Lateral Hop","8': DDB Push Press","9': Sprint in place","10': DDB Dead Snatch","11': Tuck Jump","12': DDB Hang Clean","13': Burpee"]},
+
+  {id:88, name:"HIIT Cardio 45\"",    type:"HIIT",    dur:12, group:"B", format:"45\" ON / 15\" OFF × 12'", gen:true,
+   ex:["1': Jumping Jacks","2': High Knees","3': Lateral Shuffle","4': Jump Rope sim.","5': Seal Jacks","6': Skipping In & Out","7': Ice Skater","8': Star Jump","9': Squat Jump","10': Lateral Burpee","11': Mountain Climbers","12': Sprint in place"]},
+
+  {id:89, name:"HIIT Bodyweight",     type:"HIIT",    dur:14, group:"B", format:"40\" ON / 20\" OFF × 14'", gen:true,
+   ex:["1': Push Up","2': Squat Jump","3': Plank Jack","4': Jump Lunge","5': Pike Push Up","6': Tuck Jump","7': Diamond Push Up","8': Lateral Hop","9': Decline Push Up","10': Broad Jump","11': Tricep Dip","12': Star Jump","13': Hand Release Push Up","14': Burpee"]},
+
+  {id:90, name:"HIIT Kettlebell",     type:"HIIT",    dur:13, group:"B", format:"45\" ON / 15\" OFF × 13'", gen:true,
+   ex:["1': KB Swing","2': KB Goblet Squat","3': KB Clean (Der)","4': KB Clean (Izq)","5': KB Press (Der)","6': KB Press (Izq)","7': KB Romanian DL","8': KB Snatch (Der)","9': KB Snatch (Izq)","10': KB High Pull","11': KB Around the World","12': KB Thruster","13': KB Swing all out"]},
+
+  // ── GLÚTEOS grupo B ──
+  {id:91, name:"Glute Hypertrophy",   type:"Glúteos", dur:15, group:"B", format:"COMPLETE 5 ROUNDS IN 15'", gen:true,
+   ex:["12 Barbell Hip Thrust","10/10 Single-Leg Hip Thrust","12 Sumo Deadlift KB","10/10 Banded Kick Back","15 Glute Bridge Pulse","8/8 Lateral Band Walk","10 Sumo Squat con pausa"]},
+
+  {id:92, name:"Glute HIIT 13'",      type:"Glúteos", dur:13, group:"B", format:"45\" ON / 15\" OFF × 13'", gen:true,
+   ex:["1': Squat Jump","2': Hip Thrust","3': Curtsy Lunge (Der)","4': Curtsy Lunge (Izq)","5': Sumo Squat Jump","6': Donkey Kick (Der)","7': Donkey Kick (Izq)","8': Banded Clamshell (Der)","9': Banded Clamshell (Izq)","10': Lateral Band Walk (Der)","11': Lateral Band Walk (Izq)","12': Glute Bridge march","13': Hip Thrust explosivo"]},
+
+  {id:93, name:"Glute Strength",      type:"Glúteos", dur:14, group:"B", format:"COMPLETE 4 ROUNDS IN 14'", gen:true,
+   ex:["10 Barbell Hip Thrust","8/8 Bulgarian Split Squat","10 Sumo DL con KB","10/10 Banded Monster Walk","12 Reverse Hyper","8/8 Single-Leg Romanian DL","15\" Glute Bridge Hold"]},
+
+  // ── BRAZOS grupo B ──
+  {id:94, name:"Arms Complete",       type:"Brazos",  dur:12, group:"B", format:"COMPLETE 4 ROUNDS IN 12'", gen:true,
+   ex:["10 DDB Biceps Curl","10 DDB Triceps Kickback","8 DDB Hammer Curl","8 DDB Skull Crushers","8 DDB Concentration Curl (Der)","8 DDB Concentration Curl (Izq)","10 DDB Overhead Extension","8 Diamond Push Ups"]},
+
+  {id:95, name:"Arms HIIT 13'",       type:"Brazos",  dur:13, group:"B", format:"45\" ON / 15\" OFF × 13'", gen:true,
+   ex:["1': DDB Biceps Curl","2': DDB Triceps Kickback","3': DDB Hammer Curl","4': DDB Skull Crushers","5': DDB Zottman Curl","6': DDB Close-Grip Press","7': DDB Curl + Press","8': DDB Overhead Extension","9': DDB Gumbo Curl","10': Diamond Push Up","11': DDB Lateral Raise","12': DDB Front Raise","13': DDB Arnold Press"]},
+
+  {id:96, name:"Biceps & Triceps",    type:"Brazos",  dur:14, group:"B", format:"COMPLETE 5 ROUNDS IN 14'", gen:true,
+   ex:["10 DDB Curl & Press","8 DDB Skull Crushers","10 DDB Hammer Curl","10 DDB Overhead Extension","6 DDB Chin-Up Row","8 Diamond Push Ups","10\" DDB Biceps Hold isométrico"]},
+
+  // ── PIERNAS grupo B ──
+  {id:97, name:"Leg Day HIIT",        type:"Piernas", dur:14, group:"B", format:"45\" ON / 15\" OFF × 14'", gen:true,
+   ex:["1': Squat Jump","2': Reverse Lunge (Der)","3': Reverse Lunge (Izq)","4': Jump Lunge","5': Lateral Lunge (Der)","6': Lateral Lunge (Izq)","7': Wall Sit","8': Squat pulse","9': Bulgarian Split (Der)","10': Bulgarian Split (Izq)","11': Goblet Squat Jump","12': Step Up (Der)","13': Step Up (Izq)","14': Squat all out"]},
+
+  {id:98, name:"Leg Strength",        type:"Piernas", dur:15, group:"B", format:"COMPLETE 5 ROUNDS IN 15'", gen:true,
+   ex:["8 Barbell Back Squat","6/6 DDB Bulgarian Split Squat","10 DDB Romanian Deadlift","8/8 DDB Step Up con KB","12 DDB Goblet Squat","10 Barbell Good Morning","15\" Wall Sit"]},
+
+  {id:99, name:"Quad Burn",           type:"Piernas", dur:13, group:"B", format:"40\" ON / 20\" OFF × 13'", gen:true,
+   ex:["1': Squat Jump","2': Lunge alternado","3': Lateral Squat (Der)","4': Lateral Squat (Izq)","5': Pulse Squat","6': DDB Front Squat","7': Jump Lunge","8': DDB Split Squat (Der)","9': DDB Split Squat (Izq)","10': Sumo Squat Jump","11': DDB Goblet Squat","12': Wall Sit","13': Squat all out"]},
+
+  // ── CORE grupo B ──
+  {id:100, name:"Core Power",         type:"Core",    dur:12, group:"B", format:"45\" ON / 15\" OFF × 12'", gen:true,
+   ex:["1': Plank","2': Bicycle Crunches","3': Leg Raises","4': Russian Twist","5': Hollow Body Rock","6': V-Sit Hold","7': Mountain Climbers","8': Dead Bug","9': Side Plank (Der)","10': Side Plank (Izq)","11': Windshield Wipers","12': Plank all out"]},
+
+  {id:101, name:"Core & Midline",     type:"Core",    dur:14, group:"B", format:"COMPLETE 4 ROUNDS IN 14'", gen:true,
+   ex:["15 Crunches","12 Reverse Crunches","10 Tuck Crunches","20 Bicycle Crunches","10 Toe Touches","15 Heel Touches","10 V-Sit Ups","20\" Plank","10 Leg Raises","15 Russian Twists con peso"]},
+
+  {id:102, name:"Core HIIT",          type:"Core",    dur:13, group:"B", format:"40\" ON / 20\" OFF × 13'", gen:true,
+   ex:["1': Mountain Climbers","2': Plank Jack","3': Bicycle Crunches","4': Plank to Downdog","5': Reverse Crunch","6': Spider-Man Plank","7': Russian Twist","8': Hollow Body Rock","9': Side Plank tap (Der)","10': Side Plank tap (Izq)","11': Dead Bug","12': Toe Touches","13': All out Mountain Climbers"]},
+
+  {id:103, name:"Core Bumper",        type:"Core",    dur:12, group:"B", format:"COMPLETE 3 ROUNDS IN 12'", gen:true,
+   ex:["15 Bumper Russian Twist","12 Bumper Overhead Sit Up","10 Bumper Tuck Up","8 Sprawl to Bumper Press","15\" Bumper Plank","10 Bumper Leg Raise","12 Bumper Woodchop (Der)","12 Bumper Woodchop (Izq)"]},
+
+  {id:104, name:"Core Estabilidad",   type:"Core",    dur:12, group:"B", format:"EVERY 90\" × 12'", gen:true,
+   ex:["45\" Plank + 45\" rest","45\" Side Plank Der + 45\" rest","45\" Side Plank Izq + 45\" rest","45\" Hollow Body Hold + 45\" rest","45\" Dead Bug + 45\" rest","45\" V-Sit Hold + 45\" rest","45\" Superman + 45\" rest","45\" All Out Plank + rest"]},
+
 ];
 
 const GROUP_A = BLOCKS.filter(b=>b.group==="A");
